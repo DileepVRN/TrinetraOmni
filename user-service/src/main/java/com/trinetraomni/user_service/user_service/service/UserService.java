@@ -1,24 +1,33 @@
 package com.trinetraomni.user_service.user_service.service;
 
 
+import com.trinetraomni.user_service.user_service.dto.UserRequest;
+import com.trinetraomni.user_service.user_service.dto.UserResponse;
 import com.trinetraomni.user_service.user_service.exception.UserNotFoundException;
+import com.trinetraomni.user_service.user_service.mapper.UserMapper;
 import com.trinetraomni.user_service.user_service.model.User;
 import com.trinetraomni.user_service.user_service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
-    public User registerUser(User user) {
-        return userRepository.save(user);
+
+    private UserMapper mapper;
+    public UserResponse registerUser(UserRequest user) {
+
+        return mapper.toDto(userRepository.save(mapper.toEntity(user)));
 
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserResponse> getAllUsers() {
+
+        return userRepository.findAll().stream().map(user->
+                mapper.toDto(user)).toList();
     }
 
     public User getUserById(Long id) {
