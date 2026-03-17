@@ -9,6 +9,7 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/DileepVRN/trinetra-config-repo
-          default-label: main
+          uri: https://github.com/DileepVRN/TrinetraOmni.git
+          default-label: master
+          search-paths: config-service
           clone-on-start: true
