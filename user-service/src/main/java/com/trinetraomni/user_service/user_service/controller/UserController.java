@@ -16,9 +16,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-
+@CrossOrigin(origins = "http://localhost:3001")
 @Tag(name = "User API", description = "Operations related to users")
 @RestController
+
 @RequestMapping("/users")
 public class UserController {
 
@@ -32,7 +33,7 @@ public class UserController {
     @Operation(summary = "Register a new user")
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<UserResponse>> registerUser(@Valid @RequestBody UserRequest user) {
-
+      System.out.println("new request from react0");
         UserResponse savedUser = userService.registerUser(user);
 
         return ResponseEntity.ok(
@@ -54,20 +55,26 @@ public class UserController {
 
     // ✅ 3. READ (Get User By ID)
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(
+                ApiResponse.success("User fetched", userService.getUserById(id))
+        );
     }
 
     // ✅ 4. UPDATE User
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User user) {
-        return userService.updateUser(id, user);
+    public ResponseEntity<ApiResponse<UserResponse>> updateUser(@PathVariable Long id, @RequestBody UserRequest user) {
+         return ResponseEntity.ok(
+                ApiResponse.success("User fetched",userService.updateUser(id, user)));
     }
 
     // ✅ 5. DELETE User
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable Long id) {
+         // Should throw exception if not found
         userService.deleteUser(id);
-        return "User deleted successfully!";
+        return ResponseEntity.ok(
+                ApiResponse.success("User deleted successfully", null)
+        );
     }
 }

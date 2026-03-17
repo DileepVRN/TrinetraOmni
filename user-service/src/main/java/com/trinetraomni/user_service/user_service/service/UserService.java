@@ -16,8 +16,9 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
     private UserMapper mapper;
+
     public UserResponse registerUser(UserRequest user) {
 
         return mapper.toDto(userRepository.save(mapper.toEntity(user)));
@@ -30,13 +31,28 @@ public class UserService {
                 mapper.toDto(user)).toList();
     }
 
-    public User getUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+    public UserResponse getUserById(Long id) {
+        return mapper.toDto(userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id)));
     }
 
-    public User updateUser(Long id, User user) {
-          User existingUser= getUserById(id);
-        return  existingUser=user;
+    public UserResponse updateUser(Long id, UserRequest userRequest) {
+
+        // 1️⃣ Fetch existing user entity
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        // 2️⃣ Update fields using your mapper
+        mapper.updateEntityFromDto(userRequest, existingUser);
+        // OR manually:
+        // existingUser.setName(userRequest.getName());
+        // existingUser.setEmail(userRequest.getEmail());
+        // ... etc
+
+        // 3️⃣ Save updated entity
+        User updatedUser = userRepository.save(existingUser);
+
+        // 4️⃣ Convert to response DTO
+        return mapper.toDto(updatedUser);
     }
 
     public void deleteUser(Long id) {
