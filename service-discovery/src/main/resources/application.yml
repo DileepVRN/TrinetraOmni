@@ -1,5 +1,5 @@
 spring:
   application:
-    name: service-registry
+    name: service-discovery
   config:
     import: optional:configserver:http://localhost:8888
