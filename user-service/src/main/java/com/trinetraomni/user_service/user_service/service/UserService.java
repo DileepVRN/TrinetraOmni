@@ -19,10 +19,25 @@ public class UserService {
     @Autowired
     private UserMapper mapper;
 
-    public UserResponse registerUser(UserRequest user) {
+    /*public UserResponse registerUser(UserRequest user) {
 
         return mapper.toDto(userRepository.save(mapper.toEntity(user)));
 
+    }*/
+    public UserResponse registerUser(UserRequest user) {
+
+        // ✅ Check if email already exists
+        if (userRepository.existsByEmail(user.email())) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        // ✅ Check if mobile already exists
+        if (userRepository.existsByMobile(user.mobile())) {
+            throw new RuntimeException("Mobile number already exists");
+        }
+
+        // ✅ Save user
+        return mapper.toDto(userRepository.save(mapper.toEntity(user)));
     }
 
     public List<UserResponse> getAllUsers() {
@@ -40,6 +55,17 @@ public class UserService {
         // 1️⃣ Fetch existing user entity
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
+        // ✅ Check email (only if changed)
+        if (!existingUser.getEmail().equals(userRequest.email()) &&
+                userRepository.existsByEmail(userRequest.email())) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        // ✅ Check mobile (only if changed)
+        if (!existingUser.getMobile().equals(userRequest.mobile()) &&
+                userRepository.existsByMobile(userRequest.mobile())) {
+            throw new RuntimeException("Mobile number already exists");
+        }
 
         // 2️⃣ Update fields using your mapper
         mapper.updateEntityFromDto(userRequest, existingUser);
@@ -54,6 +80,7 @@ public class UserService {
         // 4️⃣ Convert to response DTO
         return mapper.toDto(updatedUser);
     }
+
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);

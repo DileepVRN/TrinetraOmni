@@ -33,6 +33,10 @@ public class User {
     @Size(min = 6, message = "Password must be at least 6 characters")
     @Column(nullable = false)
     private String password;
+    @NotBlank(message = "mobile number is required")
+    @Size(min = 10, message = "mobile must be at least 10 numbers")
+    @Column(name = "mobile",unique = true, nullable = false)
+    private String mobile;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -58,10 +62,11 @@ public class User {
     // Constructors
     public User() {}
 
-    public User(String name, String email, String password, Role role) {
+    public User(String name, String email, String password,String mobile, Role role) {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.mobile=mobile;
         this.role = role;
     }
 
@@ -76,6 +81,8 @@ public class User {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+    public String getMobile(){ return mobile; }
+    public void setmobile (String mobile){this.mobile=mobile;}
 
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }

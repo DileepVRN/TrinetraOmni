@@ -9,6 +9,7 @@ public record UserResponse(
         Long id,
         String name,
         String email,
+        String mobile,
         Role role,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
