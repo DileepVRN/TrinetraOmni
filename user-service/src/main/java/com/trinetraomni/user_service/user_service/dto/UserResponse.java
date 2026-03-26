@@ -12,5 +12,8 @@ public record UserResponse(
         String mobile,
         Role role,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        LocalDateTime updatedAt,
+        AddressResponse address
+        //String password
+
 ) {}

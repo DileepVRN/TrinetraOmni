@@ -1,8 +1,11 @@
-package com.trinetraomni.config_service.config_service;
+package com.trinetraomni.auth_service;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+
 @SpringBootTest
-class ApplicationTests {
+class AuthServiceApplicationTests {
+
 	@Test
 	void contextLoads() {
 	}

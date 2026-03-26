@@ -7,13 +7,11 @@ import com.trinetraomni.user_service.user_service.dto.UserResponse;
 import com.trinetraomni.user_service.user_service.model.Address;
 import com.trinetraomni.user_service.user_service.model.User;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
-public interface UserMapper {
+public interface AddressMapper {
+    AddressResponse toDto(Address user) ;
 
-    public UserResponse toDto(User user);
-    @Mapping(source = "address", target = "address")
-    User toEntity(UserRequest dto);
-    void updateEntityFromDto(UserRequest request, @MappingTarget User entity);}
+    Address toEntity(AddressRequest dto);
+}
+

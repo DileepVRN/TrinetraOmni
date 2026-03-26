@@ -1,8 +1,10 @@
 server:
   port: 8081
 
-
 spring:
+  application:
+    name: user-service   # ✅ VERY IMPORTANT
+
   datasource:
     url: jdbc:mysql://localhost:3306/user_db
     username: root
@@ -11,7 +13,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update   # use 'create' only first time if needed
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
@@ -22,7 +24,13 @@ spring:
     init:
       mode: always
 
-# Optional: Logging
+# ✅ Eureka Client Config (MISSING before)
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+# Optional Logging
 logging:
   level:
     org.hibernate.SQL: DEBUG

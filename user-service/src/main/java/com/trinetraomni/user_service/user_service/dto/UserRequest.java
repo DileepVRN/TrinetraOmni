@@ -1,8 +1,6 @@
 package com.trinetraomni.user_service.user_service.dto;
-
-
-
 import com.trinetraomni.user_service.user_service.model.Role;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 
@@ -24,6 +22,8 @@ public record UserRequest(
         @Size(min = 6, message = "Password must be at least 6 characters")
         String password,
         @Schema(example = "Enter Role")
-        Role role
+        Role role,
+        AddressRequest address
+
 
 ) {}

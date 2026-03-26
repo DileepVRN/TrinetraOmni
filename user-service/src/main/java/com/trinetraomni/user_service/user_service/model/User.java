@@ -1,6 +1,6 @@
 package com.trinetraomni.user_service.user_service.model;
 
-
+import com.trinetraomni.user_service.user_service.model.Address;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -28,7 +28,7 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @JsonIgnore // 🔒 Do NOT expose password in API response
+     // 🔒 Do NOT expose password in API response
     @NotBlank(message = "Password is required")
     @Size(min = 6, message = "Password must be at least 6 characters")
     @Column(nullable = false)
@@ -37,6 +37,8 @@ public class User {
     @Size(min = 10, message = "mobile must be at least 10 numbers")
     @Column(name = "mobile",unique = true, nullable = false)
     private String mobile;
+    @Embedded
+    private Address address;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -62,12 +64,14 @@ public class User {
     // Constructors
     public User() {}
 
-    public User(String name, String email, String password,String mobile, Role role) {
+    public User(String name, String email, String password,String mobile, Role role,Address address) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.mobile=mobile;
         this.role = role;
+        this.address=address;
+
     }
 
     // Getters & Setters
@@ -90,4 +94,10 @@ public class User {
     public LocalDateTime getCreatedAt() { return createdAt; }
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public Address getAddress() {
+        return address;
+    }
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 }

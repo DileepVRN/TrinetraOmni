@@ -1,6 +1,7 @@
 package com.trinetraomni.user_service.user_service.service;
 
 
+import com.trinetraomni.user_service.user_service.dto.UserAuthResponse;
 import com.trinetraomni.user_service.user_service.dto.UserRequest;
 import com.trinetraomni.user_service.user_service.dto.UserResponse;
 import com.trinetraomni.user_service.user_service.exception.UserNotFoundException;
@@ -19,11 +20,19 @@ public class UserService {
     @Autowired
     private UserMapper mapper;
 
+
     /*public UserResponse registerUser(UserRequest user) {
 
         return mapper.toDto(userRepository.save(mapper.toEntity(user)));
 
     }*/
+    public UserResponse getUserByEmail(String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return mapper.toDto(user);
+    }
     public UserResponse registerUser(UserRequest user) {
 
         // ✅ Check if email already exists
@@ -37,6 +46,7 @@ public class UserService {
         }
 
         // ✅ Save user
+        System.out.print(user.toString());
         return mapper.toDto(userRepository.save(mapper.toEntity(user)));
     }
 
@@ -79,6 +89,17 @@ public class UserService {
 
         // 4️⃣ Convert to response DTO
         return mapper.toDto(updatedUser);
+    }
+    public UserAuthResponse getUserAuthByEmail(String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return new UserAuthResponse(
+                user.getEmail(),
+                user.getPassword(), // ✅ encoded password
+                user.getRole().toString()
+        );
     }
 
 
