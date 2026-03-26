@@ -2,6 +2,9 @@ server:
   port: 8082
 
 spring:
+  application:
+    name: auth-service
+
   datasource:
     url: jdbc:mysql://localhost:3306/auth_db
     username: root
@@ -14,7 +17,7 @@ spring:
     show-sql: true
 
 jwt:
-  secret: N8rT1kP9vYb2XcZ5qL4sR8wQ0nJ6dH3f
+  secret: Wg9/Nh9qdKxJd1M3oAQyY3u4P2qg4Jh60W3YPSDE+gQ= # ✅ Must be at least 32 chars
   expiration: 86400000
 
 eureka:
