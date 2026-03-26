@@ -7,6 +7,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -14,13 +15,20 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret}")   // ✅ from config server
+    @Value("${jwt.secret}")   // ✅ read from config server
     private String secret;
 
-    // ✅ convert Base64 string → Key
-    private Key getSigningKey() {
+    private Key key;
+
+    // ✅ Initialize the key after loading secret
+    @PostConstruct
+    public void init() {
+        // Ensure secret is Base64 encoded and at least 32 bytes
         byte[] keyBytes = Base64.getDecoder().decode(secret);
-        return Keys.hmacShaKeyFor(keyBytes);
+        if (keyBytes.length < 32) {
+            throw new IllegalArgumentException("JWT secret key is too short. Must be at least 256 bits (32 bytes)");
+        }
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
     // ✅ GENERATE TOKEN
@@ -30,7 +38,7 @@ public class JwtUtil {
                 .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 1 day
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -39,7 +47,7 @@ public class JwtUtil {
         return getClaims(token).getSubject();
     }
 
-    // ✅ EXTRACT ROLE (optional but useful)
+    // ✅ EXTRACT ROLE
     public String extractRole(String token) {
         return (String) getClaims(token).get("role");
     }
@@ -47,7 +55,7 @@ public class JwtUtil {
     // ✅ COMMON METHOD
     private Claims getClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
+                .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

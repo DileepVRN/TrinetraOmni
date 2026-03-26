@@ -14,7 +14,7 @@ spring:
     show-sql: true
 
 jwt:
-  secret: mysecretkey123
+  secret: N8rT1kP9vYb2XcZ5qL4sR8wQ0nJ6dH3f
   expiration: 86400000
 
 eureka:

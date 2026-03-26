@@ -13,7 +13,7 @@ public record UserResponse(
         Role role,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        AddressResponse address
-        //String password
+        AddressResponse address,
+        String password
 
 ) {}
