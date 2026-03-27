@@ -13,7 +13,6 @@ public interface UserClient {
 
     @PostMapping("/users")
     UserResponce createUser(@RequestBody UserRequest request);
-
     @GetMapping("/users/email/{email}")
     UserResponce getUserByEmail(@PathVariable String email);
 }*/
@@ -23,8 +22,8 @@ public interface UserClient {
     @PostMapping("/users/register")
     ApiResponse<UserResponse> createUser(@RequestBody UserRequest request);
 
-    @GetMapping("/users/email/{email}")
-    ApiResponse<UserResponse> getUserByEmail(@PathVariable String email);
+    /*@GetMapping("/users/email/{email}")
+    ApiResponse<UserResponse> getUserByEmail(@PathVariable String email);*/
     @GetMapping("/users/auth/{email}")
     UserAuthResponse getUserAuthByEmail(@PathVariable String email);
 }

@@ -21,9 +21,7 @@ import java.util.List;
 @RequestMapping("/users")
 @Tag(name = "User API", description = "Operations related to users")
 public class UserController {
-
     private final UserService userService;
-
     // ✅ Constructor Injection (BEST PRACTICE)
     public UserController(UserService userService) {
         this.userService = userService;

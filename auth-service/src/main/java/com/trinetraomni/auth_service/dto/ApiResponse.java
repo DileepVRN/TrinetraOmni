@@ -8,12 +8,10 @@ package com.trinetraomni.auth_service.dto;
 
         public ApiResponse() {
         }
-
         public ApiResponse(String message, T data) {
             this.message = message;
             this.data = data;
         }
-
         public String getMessage() {
             return message;
         }

@@ -30,7 +30,6 @@ public class JwtUtil {
         }
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
-
     // ✅ GENERATE TOKEN
     public String generateToken(String email, String role) {
         return Jwts.builder()
@@ -41,23 +40,20 @@ public class JwtUtil {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
-
     // ✅ EXTRACT EMAIL
-    public String extractEmail(String token) {
+    /*public String extractEmail(String token) {
         return getClaims(token).getSubject();
     }
-
     // ✅ EXTRACT ROLE
     public String extractRole(String token) {
         return (String) getClaims(token).get("role");
-    }
-
+    }*/
     // ✅ COMMON METHOD
-    private Claims getClaims(String token) {
+  /*  private Claims getClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-    }
+    }*/
 }
