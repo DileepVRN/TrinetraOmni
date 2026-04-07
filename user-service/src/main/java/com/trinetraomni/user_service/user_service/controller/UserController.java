@@ -78,35 +78,24 @@ public class UserController {
 
     // ✅ 5. GET USER BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<UserResponse>> getUserById(
-            @PathVariable Long id) {
+    public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable Long id) {
 
-        return ResponseEntity.ok(
-                ApiResponse.success("User fetched successfully",
-                        userService.getUserById(id))
-        );
+        return ResponseEntity.ok(ApiResponse.success("User fetched successfully", userService.getUserById(id)));
     }
-
     // ✅ 6. UPDATE USER
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> updateUser(
             @PathVariable Long id,
             @Valid @RequestBody UserRequest user) {
-
         return ResponseEntity.ok(
                 ApiResponse.success("User updated successfully",
-                        userService.updateUser(id, user))
-        );
+                        userService.updateUser(id, user)));
     }
 
     // ✅ 7. DELETE USER
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable Long id) {
-
         userService.deleteUser(id);
-
-        return ResponseEntity.ok(
-                ApiResponse.success("User deleted successfully", null)
-        );
+        return ResponseEntity.ok(ApiResponse.success("User deleted successfully", null));
     }
 }

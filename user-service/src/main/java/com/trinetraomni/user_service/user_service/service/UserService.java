@@ -26,7 +26,6 @@ public class UserService {
         this.mapper = mapper;
         this.passwordEncoder = passwordEncoder;
     }
-
     // ========================= REGISTER USER =========================
     public UserResponse registerUser(UserRequest userRequest) {
 

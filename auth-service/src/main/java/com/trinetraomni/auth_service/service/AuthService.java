@@ -2,6 +2,8 @@ package com.trinetraomni.auth_service.service;
 
 import com.trinetraomni.auth_service.client.UserClient;
 import com.trinetraomni.auth_service.dto.*;
+//import com.trinetraomni.auth_service.exception.InvalidCredentialsException;
+import com.trinetraomni.auth_service.exception.InvalidCredentialsException;
 import com.trinetraomni.auth_service.model.Role;
 import com.trinetraomni.auth_service.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -16,56 +18,31 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
 
-    // 🔐 REGISTER
-    /*public AuthResponse register(UserRequest request) {
-
-        // 1️⃣ Encode password
-        String encodedPassword = passwordEncoder.encode(request.password());
-
-        // 2️⃣ FIXED ORDER ✅
-        UserRequest newRequest = new UserRequest(
-
-                request.name(),
-                request.email(),
-                request.mobile(),       // ✅
-                encodedPassword,        // ✅
-                request.role(),
-                request.address()
-        );
-
-        // 3️⃣ Call user-service
-        //UserResponse user = userClient.createUser(newRequest);
-        ApiResponse<UserResponse> response = userClient.createUser(request);
-        UserResponse user = response.getData();
-
-        // 4️⃣ NULL SAFE ROLE ✅
-        String role = user.role() != null ? user.role().toString() : "USER";
-
-        // 5️⃣ Generate JWT
-        String token = jwtUtil.generateToken(
-                user.email(),
-                role
-        );
-
-        // 6️⃣ Return response
-        return new AuthResponse(token, user.email(), user.role());
-    }*/
-
     // 🔐 LOGIN
     public AuthResponse login(LoginRequest request) {
 
+        // 1️⃣ Fetch user from user-service
         UserAuthResponse user = userClient.getUserAuthByEmail(request.email());
 
+        // 2️⃣ Validate user existence
         if (user == null || user.password() == null) {
-            throw new RuntimeException("User not found");
+            throw new InvalidCredentialsException("Invalid email or password");
         }
+
+        // 3️⃣ Validate password
         if (!passwordEncoder.matches(request.password(), user.password())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid email or password");
         }
+
+        // 4️⃣ Handle role safely
         Role role = user.role() != null
                 ? Role.valueOf(user.role())
                 : Role.USER;
-        String token = jwtUtil.generateToken(user.email(), user.role());
-        return new AuthResponse(token, user.email(),role);
+
+        // 5️⃣ Generate JWT token
+        String token = jwtUtil.generateToken(user.email(), role.name());
+
+        // 6️⃣ Return response
+        return new AuthResponse(token, user.email(), role);
     }
 }

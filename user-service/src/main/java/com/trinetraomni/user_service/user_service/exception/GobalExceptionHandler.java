@@ -1,6 +1,7 @@
 package com.trinetraomni.user_service.user_service.exception;
 
 import com.trinetraomni.user_service.user_service.ErrorResponse;
+import com.trinetraomni.user_service.user_service.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,46 +18,25 @@ public class GobalExceptionHandler {
 
     // 🔴 404 - User Not Found
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException ex) {
-
-        ErrorResponse error = new ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                ex.getMessage(),
-                LocalDateTime.now()
-        );
-
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    public ApiResponse<?> handleUserNotFound(UserNotFoundException ex) {
+        return ApiResponse.failure(ex.getMessage());
     }
 
-    // 🔴 400 - Email Already Exists
+    // 🔴 400 - Email Exists
     @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleEmailExists(EmailAlreadyExistsException ex) {
-
-        ErrorResponse error = new ErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                ex.getMessage(),
-                LocalDateTime.now()
-        );
-
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    public ApiResponse<?> handleEmailExists(EmailAlreadyExistsException ex) {
+        return ApiResponse.failure(ex.getMessage());
     }
 
-    // 🔴 400 - Mobile Already Exists
+    // 🔴 400 - Mobile Exists
     @ExceptionHandler(MobileAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleMobileExists(MobileAlreadyExistsException ex) {
-
-        ErrorResponse error = new ErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                ex.getMessage(),
-                LocalDateTime.now()
-        );
-
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    public ApiResponse<?> handleMobileExists(MobileAlreadyExistsException ex) {
+        return ApiResponse.failure(ex.getMessage());
     }
 
-    // 🔴 400 - Validation Errors (VERY IMPORTANT)
+    // 🔴 400 - Validation Errors
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleValidationErrors(MethodArgumentNotValidException ex) {
+    public ApiResponse<?> handleValidationErrors(MethodArgumentNotValidException ex) {
 
         Map<String, String> fieldErrors = new HashMap<>();
 
@@ -64,37 +44,24 @@ public class GobalExceptionHandler {
                 fieldErrors.put(error.getField(), error.getDefaultMessage())
         );
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", 400);
-        response.put("error", "Validation Failed");
-        response.put("timestamp", LocalDateTime.now());
-        response.put("fieldErrors", fieldErrors);
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return ApiResponse.failure(fieldErrors.toString());
     }
 
-    // 🔴 400 - JSON Format Error
+    // 🔴 400 - JSON Error
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<?> handleJsonError(HttpMessageNotReadableException ex) {
-
-        return ResponseEntity.badRequest().body(Map.of(
-                "status", 400,
-                "error", "Malformed JSON",
-                "message", ex.getMostSpecificCause().getMessage(),
-                "timestamp", LocalDateTime.now()
-        ));
+    public ApiResponse<?> handleJsonError(HttpMessageNotReadableException ex) {
+        return ApiResponse.failure("Malformed JSON");
     }
 
-    // 🔴 500 - Generic Exception (Fallback)
+    // 🔴 Feign 404 (VERY IMPORTANT FOR YOUR ISSUE)
+    @ExceptionHandler(feign.FeignException.NotFound.class)
+    public ApiResponse<?> handleFeignNotFound(Exception ex) {
+        return ApiResponse.failure("User is not found");
+    }
+
+    // 🔴 500 - Generic
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
-
-        ErrorResponse error = new ErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Something went wrong",
-                LocalDateTime.now()
-        );
-
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ApiResponse<?> handleGeneral(Exception ex) {
+        return ApiResponse.failure("Something went wrong: " + ex.getMessage());
     }
 }

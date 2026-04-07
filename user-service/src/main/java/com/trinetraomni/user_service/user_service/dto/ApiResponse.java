@@ -1,7 +1,5 @@
 package com.trinetraomni.user_service.user_service.dto;
 
-
-
 import java.time.LocalDateTime;
 
 public class ApiResponse<T> {
