@@ -1,9 +1,10 @@
 server:
   port: 8081
+  forward-headers-strategy: framework   # ✅ IMPORTANT
 
 spring:
   application:
-    name: user-service   # ✅ VERY IMPORTANT
+    name: USER-SERVICE   # ✅ MUST MATCH GATEWAY
 
   datasource:
     url: jdbc:mysql://localhost:3306/user_db
@@ -24,13 +25,20 @@ spring:
     init:
       mode: always
 
-# ✅ Eureka Client Config (MISSING before)
+# ================= EUREKA =================
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://localhost:8761/eureka/
 
-# Optional Logging
+# ================= SWAGGER =================
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+# ================= LOGGING =================
 logging:
   level:
     org.hibernate.SQL: DEBUG

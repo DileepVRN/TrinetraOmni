@@ -1,9 +1,10 @@
 server:
   port: 8082
+  forward-headers-strategy: framework
 
 spring:
   application:
-    name: auth-service
+    name: AUTH-SERVICE   # ✅ MUST match Gateway (case-sensitive recommended uppercase)
 
   datasource:
     url: jdbc:mysql://localhost:3306/auth_db
@@ -16,11 +17,22 @@ spring:
       ddl-auto: update
     show-sql: true
 
+# ================= JWT =================
 jwt:
-  secret: Wg9/Nh9qdKxJd1M3oAQyY3u4P2qg4Jh60W3YPSDE+gQ= # ✅ Must be at least 32 chars
+  secret: Wg9/Nh9qdKxJd1M3oAQyY3u4P2qg4Jh60W3YPSDE+gQ=
   expiration: 86400000
 
+# ================= EUREKA =================
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://localhost:8761/eureka/
+
+# ================= SWAGGER FIX =================
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+# ✅ IMPORTANT for Gateway routing

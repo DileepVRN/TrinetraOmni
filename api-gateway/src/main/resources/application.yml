@@ -1,0 +1,72 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: API-GATEWAY
+
+  cloud:
+    gateway:
+
+      # 🔥 FIX CORS (VERY IMPORTANT)
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+
+      routes:
+
+        # ================= AUTH SWAGGER =================
+        - id: auth-swagger
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/v3/api-docs/**
+          filters:
+            - RewritePath=/auth/v3/api-docs(?<segment>/?.*), /v3/api-docs${segment}
+
+        # ================= USER SWAGGER =================
+        - id: user-swagger
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/users/v3/api-docs/**
+          filters:
+            - RewritePath=/users/v3/api-docs(?<segment>/?.*), /v3/api-docs${segment}
+
+        # ================= AUTH SERVICE =================
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
+
+        # ================= USER SERVICE =================
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/users/**
+
+# ================= EUREKA =================
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+# ================= JWT =================
+jwt:
+  secret: Wg9/Nh9qdKxJd1M3oAQyY3u4P2qg4Jh60W3YPSDE+gQ=
+  expiration: 86400000
+
+# ================= SWAGGER =================
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    urls:
+      - name: AUTH-SERVICE
+        url: /auth/v3/api-docs
+      - name: USER-SERVICE
+        url: /users/v3/api-docs
+
+  api-docs:
+    enabled: true
